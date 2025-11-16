@@ -1,0 +1,9 @@
+{
+    "name": "@aladia/common",
+    "version": "1.0.0",
+    "description": "Common shared utilities, DTOs, and types",
+    "private": true,
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts"
+}

@@ -1,0 +1,232 @@
+{
+    "info": {
+        "_postman_id": "aladia-challenge-api",
+        "name": "Aladia Challenge API",
+        "description": "Postman collection for Aladia Challenge - NestJS Microservices API\n\nThis collection demonstrates:\n- User registration\n- User authentication with JWT\n- Protected endpoints\n\nBase URL: http://localhost:3000",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.test(\"Status code is 201\", function () {",
+                                    "        pm.response.to.have.status(201);",
+                                    "    });",
+                                    "    ",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.test(\"Response has user data\", function () {",
+                                    "        pm.expect(responseJson).to.have.property('id');",
+                                    "        pm.expect(responseJson).to.have.property('email');",
+                                    "        pm.expect(responseJson).to.have.property('name');",
+                                    "        pm.expect(responseJson).to.have.property('createdAt');",
+                                    "        pm.expect(responseJson).to.have.property('updatedAt');",
+                                    "    });",
+                                    "    ",
+                                    "    // Save user email for later use",
+                                    "    pm.collectionVariables.set(\"userEmail\", responseJson.email);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"name\": \"John Doe\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new user with email, name, and password.\n\n**Request Body:**\n- `email` (string, required): Valid email address\n- `name` (string, required): User's full name (min 2 characters)\n- `password` (string, required): User password (min 6 characters)\n\n**Response:**\n- `201 Created`: User successfully registered\n- `400 Bad Request`: Validation failed\n- `409 Conflict`: User already exists"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.test(\"Status code is 200\", function () {",
+                                    "        pm.response.to.have.status(200);",
+                                    "    });",
+                                    "    ",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.test(\"Response has user and accessToken\", function () {",
+                                    "        pm.expect(responseJson).to.have.property('user');",
+                                    "        pm.expect(responseJson).to.have.property('accessToken');",
+                                    "        pm.expect(responseJson.user).to.have.property('id');",
+                                    "        pm.expect(responseJson.user).to.have.property('email');",
+                                    "        pm.expect(responseJson.user).to.have.property('name');",
+                                    "    });",
+                                    "    ",
+                                    "    // Save access token for authenticated requests",
+                                    "    pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);",
+                                    "    pm.collectionVariables.set(\"userId\", responseJson.user.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{userEmail}}\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login with email and password to receive a JWT access token.\n\n**Request Body:**\n- `email` (string, required): User email address\n- `password` (string, required): User password\n\n**Response:**\n- `200 OK`: Login successful, returns user and accessToken\n- `401 Unauthorized`: Invalid credentials"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Authentication endpoints for user registration and login"
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get All Users",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.test(\"Status code is 200\", function () {",
+                                    "        pm.response.to.have.status(200);",
+                                    "    });",
+                                    "    ",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.test(\"Response is an array\", function () {",
+                                    "        pm.expect(responseJson).to.be.an('array');",
+                                    "    });",
+                                    "    ",
+                                    "    if (responseJson.length > 0) {",
+                                    "        pm.test(\"Users have required fields\", function () {",
+                                    "            pm.expect(responseJson[0]).to.have.property('id');",
+                                    "            pm.expect(responseJson[0]).to.have.property('email');",
+                                    "            pm.expect(responseJson[0]).to.have.property('name');",
+                                    "        });",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "users"
+                            ]
+                        },
+                        "description": "Get all users. **Requires authentication** - JWT Bearer token must be provided.\n\n**Headers:**\n- `Authorization: Bearer <token>` (required)\n\n**Response:**\n- `200 OK`: List of all users\n- `401 Unauthorized`: Missing or invalid token"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "User management endpoints (protected)"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userEmail",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

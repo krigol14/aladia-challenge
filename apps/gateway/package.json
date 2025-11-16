@@ -1,0 +1,6 @@
+{
+    "name": "gateway",
+    "version": "1.0.0",
+    "description": "Gateway service - Public HTTP REST API",
+    "private": true
+}

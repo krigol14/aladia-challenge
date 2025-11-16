@@ -1,0 +1,9 @@
+{
+    "name": "@aladia/config",
+    "version": "1.0.0",
+    "description": "Configuration module",
+    "private": true,
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts"
+}

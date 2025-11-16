@@ -1,0 +1,6 @@
+{
+    "name": "authentication",
+    "version": "1.0.0",
+    "description": "Authentication microservice - User management",
+    "private": true
+}

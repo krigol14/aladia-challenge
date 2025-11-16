@@ -1,0 +1,1 @@
+{"version":3,"file":"message-patterns.js","sourceRoot":"","sources":["../../src/constants/message-patterns.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,gBAAgB,GAAG;IAC9B,IAAI,EAAE;QACJ,QAAQ,EAAE,eAAe;QACzB,OAAO,EAAE,cAAc;QACvB,KAAK,EAAE,YAAY;KACpB;CACO,CAAC"}
